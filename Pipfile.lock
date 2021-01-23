@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b64cd64b0b1f4297c84507343f42aa9693bdc56c31f54f53470bcbeba9aa8c9d"
+            "sha256": "02c7880dc593cf4f90de1147e6f125444a0365b283c416aa970b4af637e07f18"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -31,6 +31,14 @@
             ],
             "index": "pypi",
             "version": "==7.0"
+        },
+        "helpers-takemyhands": {
+            "hashes": [
+                "sha256:3a72a37ec17e9ff23c9284218789e2683220d9cef5697e4614dd954c28dcae55",
+                "sha256:5e2fbe669e173ed23a34970d866983a810160ba1e32904fb08b52a93d6c2ddca"
+            ],
+            "index": "pypi",
+            "version": "==0.0.24"
         },
         "pillow": {
             "hashes": [

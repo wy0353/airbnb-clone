@@ -31,6 +31,8 @@ class CustomUserAdmin(UserAdmin):
         "language",
         "currency",
         "superhost",
+        "is_staff",
+        "is_superuser",
     )
 
     list_filter = (
