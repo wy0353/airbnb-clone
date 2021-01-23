@@ -22,13 +22,18 @@ class LoginForm(forms.Form):
             self.add_error("email", forms.ValidationError("The user does not exist."))            
 
 
-class JoinForm(forms.Form):
+class JoinForm(forms.ModelForm):
 
     """ Join Form Definition """
 
-    email = forms.EmailField()
-    first_name = forms.CharField(max_length=20)
-    last_name = forms.CharField(max_length=20)
+    class Meta:
+        model = user_models.User
+        fields = (
+            "email",
+            "first_name",
+            "last_name",
+        )
+
     password = forms.CharField(widget=forms.PasswordInput)
     password1 = forms.CharField(widget=forms.PasswordInput, label="Confirm Password")
 
@@ -47,19 +52,18 @@ class JoinForm(forms.Form):
             return self.add_error("password1", forms.ValidationError("The password does not match."))        
         return password
 
-    def save(self):
-        try:
-            email = self.cleaned_data.get("email")
-            first_name = self.cleaned_data.get("first_name")
-            last_name = self.cleaned_data.get("last_name")
-            password = self.cleaned_data.get("password")
+    def clean_password1(self):
+        password = self.cleaned_data.get("password")
+        password1 = self.cleaned_data.get("password1")
+        if password != password1:
+            return self.add_error("password1", forms.ValidationError("The password does not match."))        
+        return password
 
-            user = user_models.User.objects.create_user(email, email, password)
-            user.first_name = first_name
-            user.last_name = last_name
-            user.save()
-
-            return user
-        except Exception as e:
-            print(e)
-            return None
+    def save(self, *args, **kwargs):
+        email = self.cleaned_data.get("email")
+        password = self.cleaned_data.get("password")
+        user = super().save(commit=False)
+        user.username = email
+        user.set_password("password")
+        user.save()
+        return user
