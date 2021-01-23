@@ -59,7 +59,6 @@ class UserLogoutView(LogoutView):
 
 
 def complete_verification(request, key):
-    print(key)
     try:
         user = user_models.User.objects.get(email_secret=key)
         user.email_verified = True
@@ -159,6 +158,7 @@ def kakao_login(request):
 
 class KakaoException(Exception):
     pass
+
 
 def kakao_callback(request):
     try:
