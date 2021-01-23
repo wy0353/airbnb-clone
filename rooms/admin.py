@@ -33,8 +33,13 @@ class PhotoAdmin(admin.ModelAdmin):
         "get_thumbnail",
     )
 
-    def get_thumbnail(self, obj):        
-        return url_to_html_img(obj.file.url)
+    def get_thumbnail(self, obj):
+        if bool(obj.file):
+            return url_to_html_img(obj.file.url)
+        
+        if bool(obj.url):
+            return url_to_html_img(obj.url)
+
     get_thumbnail.short_description = "Thumbnail"
 
 

@@ -62,6 +62,7 @@ class Photo(core_models.DefaultModel):
 
     caption = models.CharField(max_length=80, null=True, blank=True, default=None)
     file = models.ImageField(upload_to="room_photos", null=True, blank=True)
+    url = models.URLField(null=True, blank=True)
     room = models.ForeignKey("Room", on_delete=models.CASCADE, related_name="photos")
 
     def __str__(self):
@@ -82,8 +83,8 @@ class Room(core_models.DefaultModel):
     beds = models.IntegerField(default=0)
     bedrooms = models.IntegerField(default=0)
     baths = models.IntegerField(default=0)
-    check_in = models.DateTimeField(null=True, blank=True)
-    check_out = models.DateTimeField(null=True, blank=True)
+    check_in = models.TimeField(null=True, blank=True)
+    check_out = models.TimeField(null=True, blank=True)
     instant_book = models.BooleanField(default=False)
     host = models.ForeignKey("users.User", on_delete=models.CASCADE, related_name="rooms")
     room_type = models.ForeignKey("RoomType", on_delete=models.SET_NULL, related_name="rooms", null=True)
@@ -101,7 +102,9 @@ class Room(core_models.DefaultModel):
     def total_rating(self):
         all_reviews = self.reviews.all()
         all_ratings = 0
-        for review in all_reviews:
-            all_ratings += review.rating_average()
-        
-        return all_ratings / len(all_reviews)
+        if len(all_reviews) > 0:
+            for review in all_reviews:
+                all_ratings += review.rating_average()
+                
+            return round(all_ratings / len(all_reviews))
+        return 0
