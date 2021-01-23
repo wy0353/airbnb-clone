@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from helpers.django.admin.utils import url_to_html_img
 from . import models as user_models
 
 
@@ -27,7 +28,7 @@ class CustomUserAdmin(UserAdmin):
 
     list_display = (
         "username",
-        "avatar",
+        "get_avatar",
         "gender",
         "birthdate",
         "language",
@@ -49,3 +50,10 @@ class CustomUserAdmin(UserAdmin):
         "is_superuser",
         "is_staff",
     )
+
+    def get_avatar(self, obj):
+        if bool(obj.avatar):
+            return url_to_html_img(obj.avatar.url)
+        else:
+            return None
+    get_avatar.short_description = "avatar"
