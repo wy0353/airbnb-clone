@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+    {{room}} Detail
+{% endblock page_title %}
+
+{% block contents %}
+    <div>        
+        {% for photo in room.photos.all %}
+            <img width="150px" src="{{photo.url}}" alt="{{photo.caption}}">
+        {% endfor %}
+    </div>
+    <div>
+        <h3>{{room.name}}</h1>
+        <span>quests: {{room.guest}}</span>
+        <span>beds: {{room.beds}}</span>
+        <span>bedrooms: {{room.bedrooms}}</span>
+        <span>bathrooms: {{room.baths}}</span>
+        <span>room type: {{room.room_type}}</span>
+        <div>host: {{room.host.username}}</div>
+    </div>
+    <div>
+        <div>Check in time: {{room.check_in}} </div>
+        <div>Check out time: {{room.check_out}} </div>
+    </div>
+    <div>
+        <div>
+            <h4>Amenities</h4>
+            <ul>
+                {% for item in room.amenities.all %}
+                    <li>{{item}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+            <h4>Facilities</h4>
+            <ul>
+                {% for item in room.facilities.all %}
+                    <li>{{item}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>
+            <h4>House rules</h4>
+            <ul>
+                {% for item in room.house_rules.all %}
+                    <li>{{item}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- reviews -->
+    <div>   
+        {% for review in room.reviews.all %}
+            <div>
+                <div>
+                    <span>User: {{review.user.username}}</span>                    
+                </div>
+                <div>
+                    {{review.created}}
+                </div>
+                {{review.review}}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock contents %}
+    
