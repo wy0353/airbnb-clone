@@ -8,4 +8,5 @@ urlpatterns = [
     path("join/", views.UserJoinView.as_view(), name="join"),
     path("login/", views.UserLoginView.as_view(), name="login"),
     path("logout/", views.UserLogoutView.as_view(), name="logout"),
+    path("verify/<str:key>/", views.complete_verification, name="complete_verification"),
 ]

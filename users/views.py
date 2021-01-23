@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import authenticate, login
 from django.urls import reverse_lazy
 from . import forms as user_forms
+from . import models as user_models
 
 
 class UserJoinView(FormView):
@@ -17,13 +18,14 @@ class UserJoinView(FormView):
     initial = {
         "first_name": "Two",
         "last_name": "Tester",
-        "email": "tester2@email.com",
+        "email": "wy0353@gmail.com",
     }
 
     def form_valid(self, form):
         user = form.save()
         if user is not None:
             login(self.request, user)
+        user.verify_email()
         return super().form_valid(form)
 
 
@@ -42,7 +44,7 @@ class UserLoginView(FormView):
         if user is not None:
             login(self.request, user)
             user.email = email
-            user.save()        
+            user.save()
         return super().form_valid(form)
 
 
@@ -51,3 +53,18 @@ class UserLogoutView(LogoutView):
     """ User Logout View Definition """
 
     next_page = reverse_lazy("core:home")
+
+
+def complete_verification(request, key):
+    print(key)
+    try:
+        user = user_models.User.objects.get(email_secret=key)
+        user.email_verified = True
+        user.email_secret = None
+        user.save()
+        # to do: add success message
+    except user_models.User.DoesNotExist:
+        # to do: add error message
+        pass
+    return redirect(reverse("core:home"))
+

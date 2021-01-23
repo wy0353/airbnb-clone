@@ -142,3 +142,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "uploads/")
 MEDIA_URL = "/media/"
 
 AUTH_USER_MODEL = "users.User"
+
+# Email Configuration
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_PORT = os.environ.get("EMAIL_PORT")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_FROM = os.environ.get("EMAIL_FROM")
