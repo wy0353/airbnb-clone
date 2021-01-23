@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+    Room Search
+{% endblock page_title %}
+
+{% block search-bar %}
+    <form action="{% url 'rooms:search' %}" method="get">
+        {{form.as_p}}
+        <button>Search</button>
+    </form>
+
+    <h3>Results</h3>
+    
+    {% for room in rooms %}
+        <h4>
+            {{room.name}}
+        </h4>
+    {% endfor %}
+
+    <div>
+
+        
+        {% if rooms.has_previous %}
+            <a href="?page={{rooms.previous_page_number}}">Previous</a>
+        {% endif %}
+        
+        {{rooms.number}} of {{rooms.paginator.num_pages}}
+
+        {% if rooms.has_next %}
+            <a href="?page={{rooms.next_page_number}}">Next</a>
+        {% endif %}
+            
+    </div>
+    
+    {% endblock search-bar %}
+
+{% block contents %}
+    <h2>Search</h2>
+{% endblock contents %}

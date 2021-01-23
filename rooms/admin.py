@@ -94,6 +94,7 @@ class RoomAdmin(admin.ModelAdmin):
         ("Last Details", {
             'fields': (
                 "host",
+                "room_type",
             ),
         }),
     )
@@ -133,7 +134,7 @@ class RoomAdmin(admin.ModelAdmin):
     )
 
     search_fields = (
-        "^name", "^host__username",
+        "^name", "^host__username", "city", "^country",
     )
 
     filter_horizontal = (
