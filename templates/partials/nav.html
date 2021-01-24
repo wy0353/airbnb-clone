@@ -1,11 +1,9 @@
-<a href="/">Earbnb</a>
-
-<ul>    
+<ul class="flex items-center text-sm font-medium h-full">
     {% if user.is_authenticated %}
-    <li><a href="{% url 'users:logout' %}">Logout</a></li>
-    <li><a href="#">Profile</a></li>
+    <li class="nav_link"><a href="{% url 'users:logout' %}">Logout</a></li>
+    <li class="nav_link"><a href="#">Profile</a></li>
     {% else %}
-        <li><a href="{% url 'users:login' %}">Login</a></li>
-        <li><a href="{% url 'users:join' %}">Join</a></li>
+        <li class="nav_link"><a href="{% url 'users:login' %}">Login</a></li>
+        <li class="nav_link"><a href="{% url 'users:join' %}">Join</a></li>
     {% endif %}        
 </ul>
