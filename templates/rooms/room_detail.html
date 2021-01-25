@@ -21,7 +21,10 @@
         <span>bedrooms: {{room.bedrooms}}</span>
         <span>bathrooms: {{room.baths}}</span>
         <span>room type: {{room.room_type}}</span>
-        <div>host: {{room.host.username}}</div>
+        <div>
+            <span>host:</span>
+            <span><a href="{{room.host.get_absolute_url}}">{{room.host.username}}</a></span>
+        </div>
     </div>
     <div>
         <div>Check in time: {{room.check_in}} </div>

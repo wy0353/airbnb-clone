@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+    Update Profile
+{% endblock page_title %}
+
+{% block search-bar %}    
+{% endblock search-bar %}    
+
+{% block contents %}
+
+    <div class="res_box">
+        {% include 'mixins/auth/auth_form.html' with form=form submit_name="Update Profile" %}
+
+        
+        
+        {% if user.login_method == "email" %}
+            <div class="w-full flex">
+                <a href="{% url 'users:password' %}" class="btn bg-blue-500 text-white font-semibold">Change Password</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock contents %}
+    
+

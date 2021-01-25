@@ -69,6 +69,6 @@ class JoinForm(forms.ModelForm):
         password = self.cleaned_data.get("password")
         user = super().save(commit=False)
         user.username = email
-        user.set_password("password")
+        user.set_password(password)
         user.save()
         return user

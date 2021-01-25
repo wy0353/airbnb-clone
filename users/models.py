@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.html import strip_tags
 from django.template.loader import render_to_string
+from django.shortcuts import reverse
 
 
 class User(AbstractUser):
@@ -54,18 +55,23 @@ class User(AbstractUser):
     email_secret = models.CharField(max_length=120, default=None, null=True, blank=True)
     login_method = models.CharField(max_length=10, choices=LOGIN_CHOICES, null=True, blank=True, default=LOGIN_EMAIL)
 
+    def get_absolute_url(self):
+        return reverse("users:profile", kwargs={"pk": self.pk})
+
     def verify_email(self):
-        if self.email_verified is False:
-            secret_key = uuid.uuid4().hex[:20]
-            self.email_secret = secret_key
-            html_message = render_to_string("emails/verify_email.html", {"secret_key": secret_key})
-            send_mail(
-                "Verify Earbnb Account",
-                strip_tags(html_message),
-                settings.EMAIL_FROM,
-                [self.email],
-                fail_silently=False,
-                html_message=html_message
-            )
-            self.save()
-        return
+        try:
+            if self.email_verified is False:
+                secret_key = uuid.uuid4().hex[:20]
+                self.email_secret = secret_key
+                html_message = render_to_string("emails/verify_email.html", {"secret_key": secret_key})
+                send_mail(
+                    "Verify Earbnb Account",
+                    strip_tags(html_message),
+                    settings.EMAIL_FROM,
+                    [self.email],
+                    fail_silently=False,
+                    html_message=html_message
+                )
+                self.save()
+        except Exception as e:
+            print(e)

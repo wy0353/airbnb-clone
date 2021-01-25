@@ -20,8 +20,19 @@
   @apply w-full py-4 mb-3 rounded-md text-center text-lg font-semibold;
 }
 
-input {
+input,
+textarea,
+select {
   @apply w-full py-4 rounded-md text-lg font-semibold px-4 border border-gray-500 text-left focus:outline-none focus:border-blue-500;
+}
+
+textarea {
+  resize: none;
+  height: 100px;
+}
+
+select {
+  height: 60px;
 }
 
 form {

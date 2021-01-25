@@ -14,4 +14,7 @@ urlpatterns = [
     # path("logout/", views.UserLogoutView.as_view(), name="logout"),
     path("logout/", views.log_out, name="logout"),
     path("verify/<str:key>/", views.complete_verification, name="complete_verification"),
+    path("<int:pk>/", views.ProfileReadView.as_view(), name="profile"),
+    path("update-profile/", views.ProfileUpdateView.as_view(), name="update"),
+    path("update-password/", views.PasswordUpdateView.as_view(), name="password"),
 ]

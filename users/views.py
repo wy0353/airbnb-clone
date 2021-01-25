@@ -1,8 +1,9 @@
 import os
 import requests
 from django.views import View
-from django.views.generic import FormView
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import PasswordChangeView
+from django.views.generic import FormView, DetailView, UpdateView
+from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -29,7 +30,7 @@ class UserJoinView(FormView):
         user = form.save()
         if user is not None:
             login(self.request, user)
-            messages.success(request, f"Welcome back {user.first_name}")
+            messages.success(self.request, f"Welcome {user.first_name}")
         user.verify_email()
         return super().form_valid(form)
 
@@ -48,13 +49,13 @@ class UserLoginView(FormView):
         user = authenticate(self.request, username=email, password=password)
         if user is not None:
             login(self.request, user)
-            messages.success(request, f"Welcome back {user.first_name}")
+            messages.success(self.request, f"Hello {user.first_name}")
             user.email = email
             user.save()
         return super().form_valid(form)
 
 
-def log_out(request):    
+def log_out(request):
     messages.info(request, "See you later")
     logout(request)
     return redirect(reverse("core:home"))
@@ -65,8 +66,7 @@ def log_out(request):
 #     """ User Logout View Definition """
 
 #     next_page = reverse_lazy("core:home")
-    
-    
+
 
 def complete_verification(request, key):
     try:
@@ -74,10 +74,9 @@ def complete_verification(request, key):
         user.email_verified = True
         user.email_secret = None
         user.save()
-        # to do: add success message
+        messages.error(request, "Account need verify. Please check your email.")
     except user_models.User.DoesNotExist:
-        # to do: add error message
-        pass
+        messages.error(request, "User does not exist.")
     return redirect(reverse("core:home"))
 
 
@@ -143,7 +142,7 @@ def github_callback(request):
                         user.set_unusable_password()
                         user.save()
                     login(request, user)
-                    messages.success(request, f"Welcome back {user.first_name}")
+                    messages.success(request, f"Hello {user.first_name}")
                     return redirect(reverse("core:home"))
                 else:
                     raise GithubException("Can't get to your github profile.")
@@ -225,10 +224,65 @@ def kakao_callback(request):
                     photo_res = requests.get(profile_image)                    
                     user.avatar.save(f"{name}-avatar.png", ContentFile(photo_res.content))
             login(request, user)
-            messages.success(request, f"Welcome back {user.first_name}")
-            return redirect(reverse("core:home"))            
+            messages.success(request, f"Hello {user.first_name}")
+            return redirect(reverse("core:home"))
         else:
             raise KakaoException()
     except KakaoException as e:
         messages.error(request, e)
         return redirect(reverse("users:login"))
+
+
+class ProfileReadView(DetailView):
+
+    """ User Profile View Definition """
+
+    model = user_models.User
+    context_object_name = "user_obj"
+
+
+class ProfileUpdateView(UpdateView):
+
+    """ User Update View Definition """
+
+    model = user_models.User
+    context_object_name = "user"
+    template_name = "users/user_update.html"
+    fields = (
+        "first_name",
+        "last_name",
+        "bio",
+        "gender",
+        "birthdate",
+        "language",
+        "currency",
+    )
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        form.fields["first_name"].widget.attrs = {"placeholder": "First name"}
+        form.fields["last_name"].widget.attrs = {"placeholder": "Last name"}
+        form.fields["bio"].widget.attrs = {"placeholder": "Bio"}
+        form.fields["birthdate"].widget.attrs = {"placeholder": "Birthdate"}
+        return form
+
+
+
+class PasswordUpdateView(PasswordChangeView):
+
+    """ Password Update View Definition """
+    
+    template_name = "users/user_update_password.html"
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class=form_class)
+        form.fields["old_password"].widget.attrs={"placeholder": "Current password"}
+        form.fields["new_password1"].widget.attrs={"placeholder": "New password"}
+        form.fields["new_password2"].widget.attrs={"placeholder": "Confirm new password"}
+        return form
+
+    def get_success_url(self):
+        return self.request.user.get_absolute_url()
