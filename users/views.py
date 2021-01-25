@@ -4,7 +4,8 @@ from django.views import View
 from django.views.generic import FormView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.shortcuts import render, redirect, reverse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 from django.urls import reverse_lazy
 from django.core.files.base import ContentFile
 from . import forms as user_forms
@@ -28,6 +29,7 @@ class UserJoinView(FormView):
         user = form.save()
         if user is not None:
             login(self.request, user)
+            messages.success(request, f"Welcome back {user.first_name}")
         user.verify_email()
         return super().form_valid(form)
 
@@ -46,17 +48,25 @@ class UserLoginView(FormView):
         user = authenticate(self.request, username=email, password=password)
         if user is not None:
             login(self.request, user)
+            messages.success(request, f"Welcome back {user.first_name}")
             user.email = email
             user.save()
         return super().form_valid(form)
 
 
-class UserLogoutView(LogoutView):
+def log_out(request):    
+    messages.info(request, "See you later")
+    logout(request)
+    return redirect(reverse("core:home"))
 
-    """ User Logout View Definition """
 
-    next_page = reverse_lazy("core:home")
+# class UserLogoutView(LogoutView):
 
+#     """ User Logout View Definition """
+
+#     next_page = reverse_lazy("core:home")
+    
+    
 
 def complete_verification(request, key):
     try:
@@ -93,7 +103,7 @@ def github_callback(request):
         if code is not None:
             client_id = os.environ.get("GITHUB_CLIENT_ID")
             client_secret = os.environ.get("GITHUB_CLIENT_SECRET")
-            print(code)
+
             base_url = "https://github.com/"
             prefix = "login/oauth/access_token"
             query = f"?client_id={client_id}&client_secret={client_secret}&code={code}"
@@ -104,7 +114,7 @@ def github_callback(request):
             results = res.json()
             error = results.get("error", None)
             if error is not None:
-                raise GithubException()
+                raise GithubException("Can't get authorization code.")
             else:
                 access_token = results.get("access_token")
                 user_results = requests.get("https://api.github.com/user", headers={
@@ -120,7 +130,7 @@ def github_callback(request):
                     try:
                         user = user_models.User.objects.get(email=email)
                         if user.login_method != user_models.User.LOGIN_GITHUB:
-                            raise GithubException()
+                            raise GithubException(f"Please Login with {user.login_method}")
                     except user_models.User.DoesNotExist:
                         user = user_models.User.objects.create(
                             email=email,
@@ -133,13 +143,14 @@ def github_callback(request):
                         user.set_unusable_password()
                         user.save()
                     login(request, user)
+                    messages.success(request, f"Welcome back {user.first_name}")
                     return redirect(reverse("core:home"))
                 else:
-                    raise GithubException()
+                    raise GithubException("Can't get to your github profile.")
         else:
-            raise GithubException()
-    except GithubException:
-        # send error message
+            raise GithubException("Can't get code.")
+    except GithubException as e:
+        messages.error(request, e)
         return redirect(reverse("users:login"))
 
 
@@ -177,7 +188,7 @@ def kakao_callback(request):
             results = res.json()
             error = results.get("error", None)
             if error is not None:
-                raise KakaoException()
+                raise KakaoException("Can't get authorization code.")
             access_token = results.get("access_token")
 
             base_url = "https://kapi.kakao.com/"
@@ -190,13 +201,15 @@ def kakao_callback(request):
             results = res.json()
             properties = results.get("properties")
             email = results["kakao_account"]["email"]
+            if email is None:
+                raise KakaoException("Please check the email is granted.")
             name = properties.get("nickname", None)
             profile_image = properties.get("profile_image", None)
             thumbnail_image = properties.get("thumbnail_image", None)
             try:
                 user = user_models.User.objects.get(email=email)
                 if user.login_method != user_models.User.LOGIN_KAKAO:
-                    raise KakaoException()
+                    raise KakaoException(f"Please Login with {user.login_method}")
 
             except user_models.User.DoesNotExist:
                 user = user_models.User.objects.create(
@@ -212,8 +225,10 @@ def kakao_callback(request):
                     photo_res = requests.get(profile_image)                    
                     user.avatar.save(f"{name}-avatar.png", ContentFile(photo_res.content))
             login(request, user)
+            messages.success(request, f"Welcome back {user.first_name}")
             return redirect(reverse("core:home"))            
         else:
             raise KakaoException()
-    except KakaoException:
+    except KakaoException as e:
+        messages.error(request, e)
         return redirect(reverse("users:login"))
