@@ -62,7 +62,6 @@ class Photo(core_models.DefaultModel):
 
     caption = models.CharField(max_length=80, null=True, blank=True, default=None)
     file = models.ImageField(upload_to="room_photos", null=True, blank=True)
-    url = models.URLField(null=True, blank=True)
     room = models.ForeignKey("Room", on_delete=models.CASCADE, related_name="photos")
 
     def __str__(self):
@@ -106,5 +105,9 @@ class Room(core_models.DefaultModel):
             for review in all_reviews:
                 all_ratings += review.rating_average()
                 
-            return round(all_ratings / len(all_reviews))
+            return round(all_ratings / len(all_reviews), 2)
         return 0
+
+    def first_photo(self):
+        photo, = self.photos.all()[:1]
+        return photo.file.url
