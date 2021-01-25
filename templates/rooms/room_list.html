@@ -12,7 +12,7 @@
 
     <div class="flex flex-wrap -mx-16  mb-5">
         {% for room in object_list %}
-            {% include 'partials/room_card.html' with room=room %}
+            {% include 'mixins/rooms/room_card.html' with room=room %}
         {% endfor %}
     </div>
     
@@ -24,7 +24,7 @@
         </a>
         {% endif %}
 
-        <span class="mx-3 font-medium text-lg">
+        <span class="mx-3 font-medium text-lg cursor-default">
             {{page_obj.number}} of {{page_obj.paginator.num_pages}}
         </span>
         

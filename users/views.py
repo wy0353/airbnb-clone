@@ -19,9 +19,9 @@ class UserJoinView(FormView):
     form_class = user_forms.JoinForm
     success_url = reverse_lazy("core:home")
     initial = {
-        "first_name": "Two",
-        "last_name": "Tester",
-        "email": "wy0353@gmail.com",
+        # "first_name": "Two",
+        # "last_name": "Tester",
+        # "email": "wy0353@gmail.com",
     }
 
     def form_valid(self, form):

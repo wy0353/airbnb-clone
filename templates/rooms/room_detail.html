@@ -11,7 +11,7 @@
 {% block contents %}
     <div>        
         {% for photo in room.photos.all %}
-            <img width="150px" src="{{photo.url}}" alt="{{photo.caption}}">
+            <img width="150px" src="{{photo.file.url}}" alt="{{photo.caption}}">
         {% endfor %}
     </div>
     <div>
