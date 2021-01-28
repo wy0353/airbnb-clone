@@ -1,19 +1,21 @@
 import os
 import requests
 from django.views import View
-from django.contrib.auth.views import PasswordChangeView
 from django.views.generic import FormView, DetailView, UpdateView
-from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect, reverse
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth.views import LoginView
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.core.files.base import ContentFile
+from . import mixins as user_mixins
 from . import forms as user_forms
 from . import models as user_models
 
 
-class UserJoinView(FormView):
+class UserJoinView(user_mixins.LoggedOutOnlyView, FormView):
 
     """ User Join View Definition """
 
@@ -35,13 +37,12 @@ class UserJoinView(FormView):
         return super().form_valid(form)
 
 
-class UserLoginView(FormView):
+class UserLoginView(user_mixins.LoggedOutOnlyView, FormView):
 
     """ User Login View Definition """
 
     template_name = "users/login.html"
     form_class = user_forms.LoginForm
-    success_url = reverse_lazy("core:home")
 
     def form_valid(self, form):
         email = form.cleaned_data.get("email")
@@ -53,6 +54,14 @@ class UserLoginView(FormView):
             user.email = email
             user.save()
         return super().form_valid(form)
+
+    def get_success_url(self):
+        next_url = self.request.GET.get("next", None)
+        if next_url is not None:
+            print(next_url)
+            return next_url
+        else:
+            return reverse("core:home")
 
 
 def log_out(request):
@@ -233,7 +242,7 @@ def kakao_callback(request):
         return redirect(reverse("users:login"))
 
 
-class ProfileReadView(DetailView):
+class ProfileReadView(user_mixins.LoggedInOnlyView, DetailView):
 
     """ User Profile View Definition """
 
@@ -241,9 +250,10 @@ class ProfileReadView(DetailView):
     context_object_name = "user_obj"
 
 
-class ProfileUpdateView(UpdateView):
+class ProfileUpdateView(user_mixins.LoggedInOnlyView, SuccessMessageMixin, UpdateView):
 
     """ User Update View Definition """
+    success_message = "Profile updated."
 
     model = user_models.User
     context_object_name = "user"
@@ -270,12 +280,17 @@ class ProfileUpdateView(UpdateView):
         return form
 
 
-
-class PasswordUpdateView(PasswordChangeView):
+class PasswordUpdateView(
+    user_mixins.LoggedInOnlyView, 
+    user_mixins.EmailLoginOnlyView, 
+    SuccessMessageMixin, 
+    PasswordChangeView
+):
 
     """ Password Update View Definition """
     
     template_name = "users/user_update_password.html"
+    success_message = "Password updated."
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class=form_class)
