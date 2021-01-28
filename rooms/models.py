@@ -2,6 +2,7 @@ from django.db import models
 from django.shortcuts import reverse
 from core import models as core_models
 from django_countries.fields import CountryField
+from custom_calendar import Calendar
 
 
 class Item(core_models.DefaultModel):
@@ -121,3 +122,8 @@ class Room(core_models.DefaultModel):
 
     def get_next_four_photos(self):
         return self.photos.all()[1:5]
+
+    def get_calendars(self):
+        cal = Calendar(2019, 11)
+        print(cal.get_month())
+        return False

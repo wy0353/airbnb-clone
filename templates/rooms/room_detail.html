@@ -6,8 +6,7 @@
     
 {% block contents %}
 <!-- column 1: photos -->
-<div class="container max-w-full h-75vh mb-20 -mt-10 flex">
-    
+<div class="container max-w-full h-75vh mb-20 -mt-10 flex">    
     {% if room.get_first_photo %}
     <div class="w-1/2 h-full bg-cover bg-center" style="background-image: url({{room.get_first_photo}})"></div>
     {% else %}
@@ -23,12 +22,13 @@
         {% else %}
             <div class="w-full h-full flex justify-center items-center border border-gray-300">
                 <span class="text-2xl cursor-default transform duration-500 ease-in-out hover:scale-110">Other photos not found.</span>
-            </div>            
+            </div>
         {% endif %}
     </div>
 </div>
 <!-- column 2: contents -->
 <div class="container mx-auto flex justify-around pb-56">
+    <!-- column 2-1: left side -->
     <div class="w-3/4">
         <div class="flex justify-between mb-5">
             <div>
@@ -103,11 +103,16 @@
             </div>
         </div>
     </div>
+    <!-- column 2-2: right side -->
     <div class="w-1/3 px-3">
-        {% if room.host == user %}            
+        {% if room.host == user %}
             <a href="{% url 'rooms:update' room.pk %}" class="btn block w-full bg-blue-500 text-white py-2 text-base">
                 Edit Room
-            </a>            
+            </a>
+        {% else %}
+            {% if not request.session.is_hosting %}
+                {{room.get_calendars}}
+            {% endif %}
         {% endif %}
     </div>
 </div>
