@@ -1,10 +1,9 @@
 import os
 import requests
-from django.views import View
 from django.views.generic import FormView, DetailView, UpdateView
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.views import PasswordChangeView
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.messages.views import SuccessMessageMixin
@@ -301,3 +300,12 @@ class PasswordUpdateView(
 
     def get_success_url(self):
         return self.request.user.get_absolute_url()
+
+
+@login_required
+def switch_hosting(request):
+    try:
+        del request.session["is_hosting"]
+    except KeyError:
+        request.session["is_hosting"] = True
+    return redirect(reverse("core:home"))
