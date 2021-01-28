@@ -4,6 +4,7 @@ from django.views.generic import ListView, DetailView, UpdateView, View
 from django_countries import countries
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from . import models as room_models
 from . import forms as room_forms
@@ -238,7 +239,7 @@ class RoomPhotosView(user_mixins.LoggedInOnlyView, DetailView):
     """ For room photos edit view """
 
     model = room_models.Room
-    template_name = "rooms/room_photos.html"
+    template_name = "rooms/room_photo_list.html"
 
     def get_object(self, queryset=None):
         room = super().get_object(queryset=queryset)
@@ -259,3 +260,19 @@ def delete_photo(request, room_pk, photo_pk):
     except room_models.Room.DoesNotExist:
         pass
     return redirect(reverse("rooms:photos", kwargs={"pk": room_pk}))
+
+
+class PhotoUpdateView(user_mixins.LoggedInOnlyView, SuccessMessageMixin, UpdateView):
+
+    model = room_models.Photo
+    template_name = "rooms/room_photo_update.html"
+    pk_url_kwarg = "photo_pk"
+    fields = (
+        "caption",
+    )
+    success_message = "Photo updated."
+
+
+    def get_success_url(self):
+        room_pk = self.kwargs.get("room_pk")
+        return reverse("rooms:photos", kwargs={"pk": room_pk})
