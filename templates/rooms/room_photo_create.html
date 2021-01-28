@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+    Photo Create
+{% endblock page_title %}
+
+{% block search-bar %}    
+{% endblock search-bar %}    
+
+{% block contents %}
+    <div class="res_box">
+        {% include 'mixins/rooms/room_input.html' with form=form submit_name="Update" %}
+    </div>
+{% endblock contents %}
+    
+

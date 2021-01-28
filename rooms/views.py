@@ -1,6 +1,6 @@
 from django.http import Http404
 from django.shortcuts import render, redirect, reverse
-from django.views.generic import ListView, DetailView, UpdateView, View
+from django.views.generic import ListView, DetailView, UpdateView, View, FormView
 from django_countries import countries
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
@@ -276,3 +276,23 @@ class PhotoUpdateView(user_mixins.LoggedInOnlyView, SuccessMessageMixin, UpdateV
     def get_success_url(self):
         room_pk = self.kwargs.get("room_pk")
         return reverse("rooms:photos", kwargs={"pk": room_pk})
+
+
+class PhotoCreateView(user_mixins.LoggedInOnlyView, FormView):
+
+    """ Room's photo create view """
+
+    model = room_models.Photo
+    template_name = "rooms/room_photo_create.html"
+    form_class = room_forms.PhotoCreateForm
+    fields = (
+        "caption",
+        "file",        
+    )
+
+    def form_valid(self, form):
+        pk = self.kwargs.get("pk")
+        form.save(pk)
+        messages.success(self.request, "Photo created.")
+        return redirect(reverse("rooms:photos", kwargs={"pk": pk}))
+
