@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import reverse
 from core import models as core_models
 from django_countries.fields import CountryField
 
@@ -98,7 +99,10 @@ class Room(core_models.DefaultModel):
         self.city = str.capitalize(self.city)
         super().save(*args, **kwargs)
 
-    def total_rating(self):
+    def get_absolute_url(self):
+        return reverse("rooms:detail", kwargs={"pk": self.pk})
+
+    def get_total_rating(self):
         all_reviews = self.reviews.all()
         all_ratings = 0
         if len(all_reviews) > 0:
@@ -108,6 +112,9 @@ class Room(core_models.DefaultModel):
             return round(all_ratings / len(all_reviews), 2)
         return 0
 
-    def first_photo(self):
+    def get_first_photo(self):
         photo, = self.photos.all()[:1]
         return photo.file.url
+
+    def get_next_four_photos(self):
+        return self.photos.all()[1:5]

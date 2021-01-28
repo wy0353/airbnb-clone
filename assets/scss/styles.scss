@@ -20,6 +20,10 @@
   @apply w-full py-4 mb-3 rounded-md text-center text-lg font-semibold;
 }
 
+.border-section-b {
+  @apply border-b border-gray-400 pb-5 mt-5;
+}
+
 input,
 textarea,
 select {

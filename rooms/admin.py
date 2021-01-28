@@ -114,7 +114,7 @@ class RoomAdmin(admin.ModelAdmin):
         "instant_book",
         "count_amenities",
         "count_photos",
-        "total_rating",
+        "get_total_rating",
     )
 
     list_filter = (
@@ -134,7 +134,7 @@ class RoomAdmin(admin.ModelAdmin):
     )
 
     search_fields = (
-        "^name", "^host__username", "city", "^country",
+        "name", "^host__username", "city", "^country",
     )
 
     filter_horizontal = (
