@@ -7,11 +7,24 @@
 {% block contents %}
 <!-- column 1: photos -->
 <div class="container max-w-full h-75vh mb-20 -mt-10 flex">
+    
+    {% if room.get_first_photo %}
     <div class="w-1/2 h-full bg-cover bg-center" style="background-image: url({{room.get_first_photo}})"></div>
+    {% else %}
+    <div class="w-1/2 h-full flex justify-center items-center border border-gray-300">
+        <span class="text-2xl cursor-default transform duration-500 ease-in-out hover:scale-110">First photo not found.</span>
+    </div>
+    {% endif %}
     <div class="w-1/2 h-full flex flex-wrap">
-        {% for photo in room.get_next_four_photos %}
-            <div class="w-1/2 h-auto bg-cover bg-center border border-gray-700" style="background-image: url({{photo.file.url}})"></div>
-        {% endfor %}
+        {% if room.get_next_four_photos.count > 0 %}
+            {% for photo in room.get_next_four_photos %}
+                <div class="w-1/2 h-auto bg-cover bg-center border" style="background-image: url({{photo.file.url}})"></div>
+            {% endfor %}
+        {% else %}
+            <div class="w-full h-full flex justify-center items-center border border-gray-300">
+                <span class="text-2xl cursor-default transform duration-500 ease-in-out hover:scale-110">Other photos not found.</span>
+            </div>            
+        {% endif %}
     </div>
 </div>
 <!-- column 2: contents -->

@@ -18,7 +18,7 @@ class HomeView(ListView):
     model = room_models.Room
     paginate_by = 12
     paginate_orphans = 5
-    ordering = "created"
+    ordering = "-created"
 
 
 class RoomDetailView(DetailView):
@@ -295,4 +295,20 @@ class PhotoCreateView(user_mixins.LoggedInOnlyView, FormView):
         form.save(pk)
         messages.success(self.request, "Photo created.")
         return redirect(reverse("rooms:photos", kwargs={"pk": pk}))
+
+
+class RoomCraeteView(user_mixins.LoggedInOnlyView, FormView):
+
+    """ Room create view definition """
+
+    form_class = room_forms.RoomCreateForm
+    template_name = "rooms/room_create.html"
+
+    def form_valid(self, form):
+        room = form.save()
+        room.host = self.request.user
+        room.save()
+        form.save_m2m()
+        messages.success(self.request, "Room created.")
+        return redirect(room.get_absolute_url())
 

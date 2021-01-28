@@ -19,7 +19,7 @@ class LoginForm(forms.Form):
             else:
                 self.add_error("password", forms.ValidationError("The password is incorrect."))
         except user_models.User.DoesNotExist:
-            self.add_error("email", forms.ValidationError("The user does not exist."))            
+            self.add_error("email", forms.ValidationError("The user does not exist."))
 
 
 class JoinForm(forms.ModelForm):
