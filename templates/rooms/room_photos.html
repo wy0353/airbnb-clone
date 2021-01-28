@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+    {{room}} Photos
+{% endblock page_title %}
+
+{% block search-bar %}    
+{% endblock search-bar %}    
+
+{% block contents %}
+    <div class="container mx-auto my-10 flex flex-col items center">
+        {% for photo in room.photos.all %}
+            <div class="flex justify-between items-center mb-5 p-5 border border-gray-600 rounded-lg">
+                <div class="flex items-start">
+                    <img class="w-32 h-32 bg-cover bg-center" src="{{photo.file.url}}" alt="{{photo.caption}}">
+                    <span class="ml-5 text-sm">{{photo.caption}}</span>
+                </div>
+                <div class="flex flex-col w-1/5">
+                    <a href="#" class="btn w-full py-1 mb-3 text-white text-base bg-blue-500">Edit</a>
+                    <a href="#" class="btn w-full py-1 text-white text-base bg-red-500">Delete</a>
+                </div>
+            </div>
+        {% endfor %}
+            
+    </div>
+{% endblock contents %}
+    
+

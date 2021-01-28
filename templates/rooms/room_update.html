@@ -13,9 +13,8 @@
 
         {% include 'mixins/rooms/room_input.html' with form=form submit_name="Update" %}
 
-        <div class="mt-5">            
-            <span>Don't have an account?</span>
-            <a href="{% url 'users:join' %}" class="text-blue-500 font-semibold">Join</a>
+        <div class="mt-5">
+            <a href="{% url 'rooms:photos' room.pk %}" class="text-blue-500 font-medium hover:text-blue-700">Edit Photos</a>
         </div>
     </div>
 {% endblock contents %}
