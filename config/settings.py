@@ -144,6 +144,9 @@ MEDIA_URL = "/media/"
 
 AUTH_USER_MODEL = "users.User"
 
+# Auth
+LOGIN_URL = "/users/login/"
+
 # Email Configuration
 EMAIL_HOST = os.environ.get("EMAIL_HOST")
 EMAIL_PORT = os.environ.get("EMAIL_PORT")

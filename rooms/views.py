@@ -1,8 +1,10 @@
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import render, redirect, reverse
 from django.views.generic import ListView, DetailView, UpdateView, View
 from django_countries import countries
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from . import models as room_models
 from . import forms as room_forms
 from users import mixins as user_mixins
@@ -245,4 +247,15 @@ class RoomPhotosView(user_mixins.LoggedInOnlyView, DetailView):
         else:
             return room
 
-
+@login_required
+def delete_photo(request, room_pk, photo_pk):
+    try:
+        room = room_models.Room.objects.get(pk=room_pk)
+        if room.host.pk != request.user.pk:
+            messages.error(request, "Not allowed delete the photo.")
+        else:
+            room_models.Photo.objects.filter(pk=photo_pk).delete()
+            messages.success(request, "Photo deleted.")
+    except room_models.Room.DoesNotExist:
+        pass
+    return redirect(reverse("rooms:photos", kwargs={"pk": room_pk}))
