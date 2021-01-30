@@ -12,11 +12,11 @@ class BookedDay(core_models.DefaultModel):
         verbose_name = "Booked Day"
         verbose_name_plural = "Booked Days"
 
-    day = models.DateField()
+    date = models.DateField()
     reservation = models.ForeignKey("Reservation", on_delete=models.CASCADE, related_name="booked_days")
 
     def __str__(self):
-        return f"{self.day} of {self.reservation.check_in} - {self.reservation.check_out}"
+        return f"{self.date} of {self.reservation.check_in} - {self.reservation.check_out}"
 
 
 class Reservation(core_models.DefaultModel):

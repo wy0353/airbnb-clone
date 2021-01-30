@@ -125,9 +125,9 @@
                             
                             {% for day in cal.get_days %}
                                 <div class="mb-2 mx-1">
-                                    {% if day.number != 0 %}
+                                    {% if day.day != 0 %}
                                         {% is_booked room day as is_booked_bool %}
-                                        {% if day.past %}
+                                        {% if day.is_past %}
                                             <span class="block w-full py-0.5 bg-gray-100 text-gray-300 rounded-md cursor-default">{{day}}</span>
                                         {% elif is_booked_bool %}
                                             <span class="block w-full py-0.5 bg-red-300 text-white rounded-md cursor-default line-through">{{day}}</span>
