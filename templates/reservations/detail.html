@@ -18,9 +18,20 @@
                 <span class="divide-vertical"></span>
                 <span class="">{{reservation.room.guests}} Guest{{reservation.room.guest|pluralize}}</span>
                 <span class="divide-vertical"></span>
-                <span class="text-green-400">{{reservation.status|capfirst}}</span>
+                <span class="
+                {% if reservation.status == 'pending' %}
+                    text-yellow-500
+                {% elif reservation.status == 'canceled' %}
+                    text-red-500
+                {% else %}
+                    text-green-500
+                {% endif %}
+                    ">{{reservation.get_status_display}}</span>
             </div>
             <div class="mt-2">
+                {% if reservation.status == "pending" %}
+                    
+                {% endif %}
                 <span class="text-2xl font-semibold text-gray-600">{{reservation.room.name}}</span>
             </div>
         </div>
@@ -32,7 +43,7 @@
                 <a href="{{reservation.room.host.get_absolute_url}}">
                     {% include 'mixins/auth/user_avatar.html' with user=reservation.room.host %}
                 </a>
-                <span class="mt-3 text-sm text-gray-500 cursor-default">{{reservation.room.host.first_name}}</span>
+                <span class="mt-2 text-sm text-gray-500 cursor-default">{{reservation.room.host.first_name}}</span>
             </div>
 
             <!-- row 3-2: host contact messages -->
@@ -44,9 +55,14 @@
 
         <!-- row 4: options -->
         <div class="flex p-5 border-l border-r border-b border-gray-400">
-            <a href="#" class="w-full py-3 bg-red-500 border border-red-500 border-opacity-0 rounded-md text-center text-white font-semibold hover:text-red-500 hover:bg-white hover:border-opacity-100">
-                Cancel Reservation
-            </a>
+            {% if reservation.status == 'pending' %}
+                <a href="#" class="w-full py-3 bg-red-500 border border-red-500 border-opacity-0 rounded-md text-center text-white font-semibold hover:text-red-500 hover:bg-white hover:border-opacity-100">
+                    Cancel Reservation</a>
+                {% if reservation.room.host != user %}
+                    <a href="#" class="w-full py-3 ml-5 bg-green-500 border border-green-500 border-opacity-0 rounded-md text-center text-white font-semibold hover:text-green-500 hover:bg-white hover:border-opacity-100">
+                    Confirm Reservation</a>
+                {% endif %}
+            {% endif %}
         </div>
     </div>
 {% endblock contents %}
