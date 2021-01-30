@@ -1,4 +1,5 @@
 from django.db import models
+from . import managers
 
 class DefaultModel(models.Model):
 
@@ -9,3 +10,4 @@ class DefaultModel(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    objects = managers.CustomModelManager()

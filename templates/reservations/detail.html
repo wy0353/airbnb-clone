@@ -59,7 +59,8 @@
                 {% if reservation.status == 'confirmed' and reservation.is_finished %}
                 <div class="w-1/2 mx-auto mt-3">
                     <span class="w-full block text-center text-2xl text-gray-700 font-semibold cursor-default">Write Review</span>
-                    <form action="" method="POST" class="my-5">
+                    <form action="{% url 'reviews:create' reservation.room.pk %}" method="POST" class="my-5">
+                        {% csrf_token %}
                         {% for field in form %}
                             <div class="mb-3">
                                 <span class="mb-1 block">{{field.label}}</span>
@@ -70,7 +71,7 @@
                     </form>
                 </div>
                 {% else %}
-                    <div class="flex ">
+                    <div class="flex w-full">
                         {% if reservation.status == 'pending' %}
                             <a href="{% url 'reservations:update' reservation.pk 'cancel' %}" class="w-full py-3 mx-2 bg-red-500 border border-red-500 border-opacity-0 rounded-md text-center text-white font-semibold hover:text-red-500 hover:bg-white hover:border-opacity-100">
                                 Cancel Reservation</a>

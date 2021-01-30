@@ -2,7 +2,6 @@ import datetime
 from django.db import models
 from django.utils import timezone
 from core import models as core_models
-from . import managers as reservation_managers
 
 
 class BookedDay(core_models.DefaultModel):
@@ -38,7 +37,6 @@ class Reservation(core_models.DefaultModel):
     check_out = models.DateField(null=True, blank=True)
     guest = models.ForeignKey("users.User", on_delete=models.CASCADE, related_name="reservations")
     room = models.ForeignKey("rooms.Room", on_delete=models.CASCADE, related_name="reservations")
-    objects = reservation_managers.CustomReservationManager()
 
     def __str__(self):
         return f"{self.room.name} - {self.check_in}"
