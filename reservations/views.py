@@ -1,4 +1,5 @@
 import datetime
+from django.http import Http404
 from django.shortcuts import render, redirect, reverse
 from django.views.generic import View
 from django.contrib import messages
@@ -31,8 +32,17 @@ def create(request, room, year, month, day):
 
 class ReservationDetailView(View):
 
-    """"""
+    """ Reservation Detail View Definition """
 
-    def get(self, request, pk):
-        print(f"reservation pk: {pk}")
+    def get(self, *args, **kwargs):
+        pk = kwargs.get("pk")
+        reservation = reservation_models.Reservation.objects.get_or_none(pk=pk)
+        if reservation is None or (
+            reservation.guest != self.request.user
+            and reservation.room.host != self.request.user
+        ):
+            raise Http404()
+
+        return render(self.request, "reservations/detail.html", {"reservation": reservation})
+        
 

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+
+{% block page_title %}
+    Reservation Detail
+{% endblock page_title %}
+    
+
+{% block contents %}
+    <div class="container mx-auto my-10 flex flex-col">
+        <!-- row 1: room image -->
+        <div class="h-56 bg-center bg-cover rounded-t-lg" style="background-image: url({{reservation.room.get_first_photo}})"></div>
+
+        <!-- row 2: room informations -->
+        <div class="flex flex-col p-5 border-l border-b border-r border-gray-400">
+            <div class="flex font-semibold text-gray-500 items-center cursor-default">
+                <span>{{reservation.check_out|date:'M'}} {{reservation.check_in|date:'j'}} ~ {{reservation.check_out|date:'j'}} {{reservation.check_out|date:'Y'}}</span>
+                <span class="divide-vertical"></span>
+                <span class="">{{reservation.room.guests}} Guest{{reservation.room.guest|pluralize}}</span>
+                <span class="divide-vertical"></span>
+                <span class="text-green-400">{{reservation.status|capfirst}}</span>
+            </div>
+            <div class="mt-2">
+                <span class="text-2xl font-semibold text-gray-600">{{reservation.room.name}}</span>
+            </div>
+        </div>
+
+        <!-- row 3: contect to host -->
+        <div class="flex p-5 border-l border-r border-b border-gray-400">
+            <!-- row 3-1: host avatar -->
+            <div class="w-2/12 flex flex-col items-center">
+                <a href="{{reservation.room.host.get_absolute_url}}">
+                    {% include 'mixins/auth/user_avatar.html' with user=reservation.room.host %}
+                </a>
+                <span class="mt-3 text-sm text-gray-500 cursor-default">{{reservation.room.host.first_name}}</span>
+            </div>
+
+            <!-- row 3-2: host contact messages -->
+            <div class="w-10/12 flex flex-col text-gray-500">
+                <span class="font-semibold text-lg">Contact Your Earbnb Host</span>
+                <span class="mt-2 font-medium">Your host is the best person to contact for questions about your reservation.</span>
+            </div>
+        </div>
+
+        <!-- row 4: options -->
+        <div class="flex p-5 border-l border-r border-b border-gray-400">
+            <a href="#" class="w-full py-3 bg-red-500 border border-red-500 border-opacity-0 rounded-md text-center text-white font-semibold hover:text-red-500 hover:bg-white hover:border-opacity-100">
+                Cancel Reservation
+            </a>
+        </div>
+    </div>
+{% endblock contents %}
+    
