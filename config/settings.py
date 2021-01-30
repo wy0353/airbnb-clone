@@ -26,6 +26,7 @@ SECRET_KEY = '5n(-=so!qv0p1hzr8bt+c5e$v%crdy2-*61c1v#o+7m6!=1&ic'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    "127.0.0.1",
     "121.130.15.124",
 ]
 

@@ -1,4 +1,4 @@
-<ul class="flex items-center text-sm font-medium h-full">
+<ul class="flex items-center text-sm font-medium h-full"> 
     {% if user.is_authenticated %}
     {% if request.session.is_hosting %}
         <li class="nav_link"><a href="{% url 'rooms:create' %}">Create Room</a></li>
