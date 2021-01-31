@@ -19,4 +19,5 @@ class ListAdmin(admin.ModelAdmin):
 
     search_fields = (
         "name",
+        "user__username",
     )

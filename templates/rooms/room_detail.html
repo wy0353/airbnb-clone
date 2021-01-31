@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load is_booked %}
+{% load is_booked on_favs %}
 
 {% block page_title %}
     {{room}} Detail
@@ -31,7 +31,7 @@
 <div class="container mx-auto flex justify-around pb-56">
     <!-- row 2-1: left side -->
     <div class="w-3/4">
-        <div class="flex justify-between mb-5">
+        <div class="flex justify-between border-with-shadow">
             <div>
                 <h4 class="text-3xl font-semibold mb-2">{{room.name}}</h4>
                 <span class="text-gray-700">{{room.city}}</span>
@@ -41,11 +41,8 @@
                 <span class="mt-2 text-sm text-green-700">{{room.host.first_name}}</span>
             </a>
         </div>
-        
-        <!-- favourite button -->
-        <a href="#" class="btn block mb-5 py-2 bg-red-500 text-sm border border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 hover:bg-white text-white">Add to Favourite</a>
 
-        <div class="flex text-xs cursor-default border-section-b">
+        <div class="flex mt-5 text-xs cursor-default border-section-b border-with-shadow">
             <span class="mr-3">{{room.room_type}}</span>
             <span class="mr-3">{{room.guests}} guest{{room.guests|pluralize}}</span>
             <span class="mr-3">{{room.beds}} bed{{room.beds|pluralize}}</span>
@@ -53,32 +50,32 @@
             <span class="mr-3">{{room.baths}} bath{{room.baths|pluralize}}</span>
         </div>
 
-        <p class="border-section-b">
+        <p class="border-section-b border-with-shadow">
             {{room.description}}
         </p>
 
-        <div class="border-section-b">
+        <div class="border-section-b border-with-shadow">
             <h4 class="text-lg font-medium mb-3">House Rules</h4>
             {% for item in room.house_rules.all %}
                 <li class="text-sm">{{item}}</li>
             {% endfor %}
         </div>
 
-        <div class="border-section-b">
+        <div class="border-section-b border-with-shadow">
             <h4 class="text-lg font-medium mb-3">Amenities</h4>
             {% for item in room.amenities.all %}
                 <li class="text-sm">{{item}}</li>
             {% endfor %}
         </div>
 
-        <div class="border-section-b">
+        <div class="border-section-b border-with-shadow">
             <h4 class="text-lg font-medium mb-3">Facilities</h4>
             {% for item in room.facilities.all %}
                 <li class="text-sm">{{item}}</li>
             {% endfor %}
         </div>
 
-        <div class="mt-5">
+        <div class="mt-5 border-with-shadow">
             <h4 class="text-lg font-medium mb-3">Reviews</h4>
             <div class="flex items-center border-section-b">
                 <div>
@@ -110,6 +107,16 @@
     <div class="mx-2"></div>
     <!-- row 2-2: right side -->
     <div class="w-1/3 px-3">
+        <!-- favourite button -->
+        {% on_favs room as on_favs_boolean %}
+        {% if on_favs_boolean %}
+            <a href="{% url 'lists:toggle' room.pk %}?action=remove" class="btn block mb-5 py-2 bg-red-500 text-sm border border-red-500 border-opacity-0 hover:border-opacity-100 hover:text-red-500 hover:bg-white text-white">Remove from Favourite</a>
+        {% else %}
+            <a href="{% url 'lists:toggle' room.pk %}?action=add" class="btn block mb-5 py-2 bg-green-500 text-sm border border-green-500 border-opacity-0 hover:border-opacity-100 hover:text-green-500 hover:bg-white text-white">Add in Favourite</a>
+        {% endif %}
+            
+        
+
         {% if room.host == user %}
             <a href="{% url 'rooms:update' room.pk %}" class="btn block w-full bg-blue-500 text-white py-2 text-base">
                 Edit Room
@@ -117,7 +124,7 @@
         {% else %}
             {% if not request.session.is_hosting %}
                 {% for cal in room.get_calendars %}
-                    <div class="mb-20">
+                    <div class="mb-10 border-with-shadow">
                         <span class="block mb-3 text-center font-medium text-lg">{{cal.get_month}}</span>
                         <div class="grid grid-cols-7 text-center font-medium text-sm">
                             {% for day_header in cal.day_of_week_names %}

@@ -1,3 +1,5 @@
+{% load has_favs %}
+
 <ul class="flex items-center text-sm font-medium h-full"> 
     {% if user.is_authenticated %}
     {% if request.session.is_hosting %}
@@ -12,6 +14,8 @@
         {% endif %}
         </a>
     </li>
+    {% has_favs as has_favs_boolean %}
+    <li class="nav_link"><a href="{% url 'lists:favs' %}">Favs {% if has_favs_boolean %}({{user.list.rooms.count}}){% endif %}</a></li>
     <li class="nav_link"><a href="{{user.get_absolute_url}}">Profile</a></li>
     <li class="nav_link"><a href="{% url 'users:logout' %}">Logout</a></li>
     {% else %}
