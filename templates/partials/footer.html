@@ -1,3 +1,19 @@
-<footer class="container mx-auto text-center py-20 border-t font-medium text-gray-500">
-    <span class="cursor-default">&copy; 2021 Earbnb, Inc, All rights reserved. Please Just go by.</span>
+{% load i18n %}
+
+<footer class="container mx-auto text-center py-20 border-t font-medium text-gray-500 cursor-default">
+    <div class="flex flex-col">
+        <span class="">&copy; 2021 Code Liner, {% trans 'All rights reserved.' %}</span>
+        <span class="mt-2">{% trans 'Please Just go by.' %}</span>
+    </div>
+
+    <!-- language changer -->
+    <div class="flex justify-center items-center mt-5 ">
+        <span>Language</span>
+        {% get_current_language as LANGUAGE_CODE %}
+        <select name="language" id="js-lang" class="w-1/5 h-auto text-sm p-1 ml-3">
+            <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+            <option value="es" {% if LANGUAGE_CODE == 'es' %}selected{% endif %}>Spanish</option>
+        </select>
+    </div>
+    
 </footer>

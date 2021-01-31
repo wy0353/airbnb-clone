@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block page_title %}
     Room List
@@ -25,7 +26,7 @@
         {% endif %}
 
         <span class="mx-3 font-medium text-lg cursor-default">
-            {{page_obj.number}} of {{page_obj.paginator.num_pages}}
+            {% blocktrans with current_page=page_obj.number total_page=page_obj.paginator.num_pages %}Page {{current_page}} of {{total_page}}{% endblocktrans %}
         </span>
         
         {% if page_obj.has_next %}
